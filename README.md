@@ -12,11 +12,7 @@ It is built for **Web Technology Assignment 5** with only HTML5, basic CSS3 and 
 
 ## Screenshot
 
-> **Screenshot not added yet.** To add one:
-> 1. Run the app and generate some study material.
-> 2. Take a screenshot of the page (Windows: `Win + Shift + S`, macOS: `Cmd + Shift + 4`).
-> 3. Create a folder named `screenshots` and save the image as `screenshots/study-page.png`.
-> 4. Replace this note with: `![StudyForge screenshot](screenshots/study-page.png)`
+![StudyForge screenshot](screenshots/img.png)`
 
 ## Features
 
