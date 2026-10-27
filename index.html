@@ -1,17 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StudyForge - AI Study Assistant</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<link rel="stylesheet" href="style.css">
-</head>
-
 <body>
 
-     <script src="script.js"></script>
-</body>
+  <!-- ===== A. Header ===== -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="#study">StudyForge</a>
+      <nav aria-label="Main navigation">
+        <a href="#study" data-page="study">Study</a>
+        <a href="#history" data-page="history">History</a>
+        <a href="#settings" data-page="settings">Settings</a>
+      </nav>
+      <button id="theme-toggle" class="btn btn-small" type="button" aria-pressed="false">Dark mode</button>
+    </div>
+  </header>
 
+  <main class="container">
+    <noscript><p class="message error">This app needs JavaScript. Please enable it.</p></noscript>
+
+    <!-- ===== B + C. Study page (input + results) ===== -->
+    <section id="page-study" class="page">
+      <h1>AI Study Assistant</h1>
+      <p class="muted">
+        Paste your class notes or type a topic. The app asks Google Gemini to create a short summary,
+        a 5-question quiz and flashcards for you.
+      </p>
+
+      <div class="box">
+        <label for="notes-input">Notes or topic</label>
+        <textarea id="notes-input" rows="10" placeholder="Paste your notes here, or type a topic such as: Photosynthesis"></textarea>
+
+        <div class="counter-row">
+          <span id="char-counter">0 / 12000 characters</span>
+          <span id="char-warning" class="warning" hidden></span>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div>
+            <label for="answer-style">Answer style</label>
+            <select id="answer-style">
+              <option value="eli10">Explain Like I'm 10</option>
+              <option value="exam" selected>Exam-Focused</option>
+              <option value="detailed">Detailed</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="generate-btn" class="btn btn-primary" type="button">Generate Study Material</button>
+        <span id="loading" class="loading" hidden>Contacting Gemini, please wait...</span>
+        <p id="study-error" class="message" role="alert" hidden></p>
+      </div>
+
+      <!-- Results are hidden until something has been generated -->
+      <section id="results" hidden>
+        <h2>Results</h2>
+        <p id="result-meta" class="muted small"></p>
+
+        <div class="tabs" role="tablist" aria-label="Study material">
+          <button class="tab active" id="tab-btn-summary" type="button" role="tab" aria-selected="true" data-tab="summary">Summary</button>
+          <button class="tab" id="tab-btn-quiz" type="button" role="tab" aria-selected="false" data-tab="quiz">Quiz</button>
+          <button class="tab" id="tab-btn-flashcards" type="button" role="tab" aria-selected="false" data-tab="flashcards">Flashcards</button>
+        </div>
+
+        <!-- Summary tab -->
+        <div id="tab-summary" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-summary">
+          <div id="summary-text" class="summary-text"></div>
+          <div class="button-row">
+            <button id="copy-btn" class="btn" type="button">Copy</button>
+            <button id="download-btn" class="btn" type="button">Download as TXT</button>
+            <button id="read-btn" class="btn" type="button">Read Aloud</button>
+            <button id="stop-btn" class="btn" type="button" disabled>Stop Speaking</button>
+          </div>
+          <p id="summary-message" class="message" role="status" hidden></p>
+        </div>
+
+        <!-- Quiz tab -->
+        <div id="tab-quiz" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-quiz" hidden>
+          <div id="quiz-container"></div>
+          <div class="button-row">
+            <button id="submit-quiz-btn" class="btn btn-primary" type="button">Submit Quiz</button>
+            <button id="retake-quiz-btn" class="btn" type="button" hidden>Retake Quiz</button>
+          </div>
+          <p id="quiz-message" class="message" role="alert" hidden></p>
+          <p id="quiz-result" class="quiz-result" role="status" hidden></p>
+
+          <h3>Your quiz scores</h3>
+          <div id="scores-box" class="muted"></div>
+        </div>
+
+        <!-- Flashcards tab -->
+        <div id="tab-flashcards" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-flashcards" hidden>
+          <p class="muted small">Click the card (or press Enter) to flip it.</p>
+          <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-label="Flashcard. Click to flip.">
+            <div class="flashcard-inner">
+              <div class="face front">
+                <span class="face-label">Question</span>
+                <p id="card-front"></p>
+              </div>
+              <div class="face back">
+                <span class="face-label">Answer</span>
+                <p id="card-back"></p>
+              </div>
+            </div>
+          </div>
+          <p id="flash-progress" class="muted" role="status"></p>
+          <div class="button-row">
+            <button id="prev-card-btn" class="btn" type="button">Previous</button>
+            <button id="known-btn" class="btn btn-primary" type="button">Known</button>
+            <button id="unknown-btn" class="btn" type="button">Not Known</button>
+            <button id="next-card-btn" class="btn" type="button">Next</button>
+            <button id="reset-cards-btn" class="btn btn-small" type="button">Reset progress</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ===== D. History page ===== -->
+    <section id="page-history" class="page" hidden>
+      <h1>History</h1>
+      <p class="muted">Your previous results are saved in this browser (localStorage).</p>
+      <div class="box">
+        <label for="history-search">Search history</label>
+        <input id="history-search" type="search" placeholder="Search by topic or notes">
+        <div class="button-row">
+          <button id="clear-history-btn" class="btn" type="button">Clear All History</button>
+        </div>
+        <p id="history-message" class="message" role="status" hidden></p>
+      </div>
+      <ul id="history-list" class="history-list"></ul>
+    </section>
+
+    <!-- ===== E. Settings page ===== -->
+    <section id="page-settings" class="page" hidden>
+      <h1>Settings</h1>
+      <div class="box">
+        <h2>Gemini API key</h2>
+        <p>
+          You need your own free Gemini API key. Create one in
+          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>
+          and paste it below. This project does not include a key.
+        </p>
+        <label for="api-key-input">API key</label>
+        <input id="api-key-input" type="password" autocomplete="off" placeholder="Paste your key here">
+        <div class="button-row">
+          <button id="save-key-btn" class="btn btn-primary" type="button">Save API Key</button>
+          <button id="toggle-key-btn" class="btn" type="button">Show</button>
+          <button id="clear-key-btn" class="btn" type="button">Clear API Key</button>
+        </div>
+        <p id="key-status" class="muted" role="status"></p>
+        <p id="settings-message" class="message" role="status" hidden></p>
+        <p class="small muted">
+          Security note: the key is stored in this browser's localStorage. localStorage is not secure storage.
+          Anyone who can use your browser (or run scripts on this page) can read it.
+          Use a key with a usage limit, never share it, and do not use a shared computer.
+        </p>
+      </div>
+
+      <div class="box">
+        <h2>Model</h2>
+        <label for="model-input">Gemini model name</label>
+        <input id="model-input" type="text" autocomplete="off">
+        <div class="button-row">
+          <button id="save-model-btn" class="btn" type="button">Save Model</button>
+          <button id="reset-model-btn" class="btn" type="button">Use Default</button>
+        </div>
+        <p id="model-message" class="message" role="status" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer small muted">
+    StudyForge - Web Technology Assignment 5. AI output can be wrong, so always check important facts.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
 </html>

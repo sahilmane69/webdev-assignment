@@ -1,4 +1,188 @@
-*{
-     margin: 0;
-     padding: 0;
+/* StudyForge - simple Codeforces-inspired styling.
+   Colours are CSS variables, so dark mode only has to change the variables. */
+
+:root {
+  --bg: #ffffff;
+  --panel: #f6f6f6;
+  --text: #222222;
+  --muted: #666666;
+  --border: #cccccc;
+  --link: #0645ad;
+  --btn-bg: #f0f0f0;
+  --btn-text: #222222;
+  --primary: #1f5fbf;
+  --primary-text: #ffffff;
+  --ok-bg: #e3f4e3;
+  --ok-border: #5aa05a;
+  --err-bg: #fbe3e3;
+  --err-border: #c05050;
+  --err-text: #9a1c1c;
+  --warn-text: #9a5b00;
+}
+
+:root.dark {
+  --bg: #1b1b1b;
+  --panel: #262626;
+  --text: #e6e6e6;
+  --muted: #a8a8a8;
+  --border: #4a4a4a;
+  --link: #7db3ff;
+  --btn-bg: #333333;
+  --btn-text: #e6e6e6;
+  --primary: #3b78d4;
+  --primary-text: #ffffff;
+  --ok-bg: #1f3a1f;
+  --ok-border: #5aa05a;
+  --err-bg: #432020;
+  --err-border: #c05050;
+  --err-text: #ff9c9c;
+  --warn-text: #ffc266;
+}
+
+/* Makes sure the HTML "hidden" attribute always wins */
+[hidden] { display: none !important; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--link); }
+
+h1 { font-size: 20px; margin: 16px 0 6px; }
+h2 { font-size: 16px; margin: 16px 0 6px; }
+h3 { font-size: 14px; margin: 18px 0 6px; }
+
+.container { max-width: 860px; margin: 0 auto; padding: 0 12px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+/* ----- Header ----- */
+.navbar { border-bottom: 1px solid var(--border); background: var(--panel); }
+.navbar-inner { display: flex; align-items: center; gap: 16px; padding-top: 8px; padding-bottom: 8px; flex-wrap: wrap; }
+.brand { font-size: 18px; font-weight: bold; text-decoration: none; }
+.navbar nav { display: flex; gap: 14px; flex: 1; }
+.navbar nav a { text-decoration: none; padding: 2px 0; }
+.navbar nav a[aria-current="page"] { font-weight: bold; border-bottom: 2px solid var(--link); }
+
+/* ----- Boxes and forms ----- */
+.box { border: 1px solid var(--border); background: var(--panel); padding: 12px; margin: 12px 0; border-radius: 3px; }
+
+label { display: block; font-weight: bold; margin: 8px 0 4px; }
+
+textarea, input[type="text"], input[type="password"], input[type="search"], select {
+  width: 100%;
+  padding: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+textarea { resize: vertical; }
+
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.form-row > div { flex: 1 1 200px; }
+
+.counter-row { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.warning { color: var(--warn-text); font-weight: bold; }
+.counter-over { color: var(--err-text); font-weight: bold; }
+
+/* ----- Buttons ----- */
+.btn {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 6px 12px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn:hover:not(:disabled) { border-color: var(--link); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
+.btn-small { padding: 3px 8px; font-size: 12px; }
+.button-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+
+.loading { margin-left: 8px; color: var(--muted); font-size: 13px; }
+
+/* ----- Messages ----- */
+.message { padding: 6px 10px; border: 1px solid var(--border); border-radius: 3px; margin: 10px 0 0; }
+.message.error { background: var(--err-bg); border-color: var(--err-border); color: var(--err-text); }
+.message.ok { background: var(--ok-bg); border-color: var(--ok-border); }
+
+/* ----- Tabs ----- */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-top: 8px; }
+.tab {
+  font-family: inherit; font-size: 14px;
+  padding: 7px 14px;
+  background: var(--btn-bg); color: var(--link);
+  border: 1px solid var(--border); border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  position: relative; top: 1px;
+}
+.tab.active { background: var(--bg); color: var(--text); font-weight: bold; }
+.tab-panel { border: 1px solid var(--border); border-top: none; padding: 12px; }
+.summary-text { white-space: pre-wrap; }
+
+/* ----- Quiz ----- */
+.question { border: 1px solid var(--border); border-radius: 3px; margin: 0 0 12px; padding: 8px 12px 10px; }
+.question legend { font-weight: bold; padding: 0 4px; }
+.option { display: block; font-weight: normal; margin: 4px 0; padding: 4px 6px; border: 1px solid transparent; border-radius: 3px; cursor: pointer; }
+.option.correct { background: var(--ok-bg); border-color: var(--ok-border); }
+.option.wrong { background: var(--err-bg); border-color: var(--err-border); }
+.feedback { margin-top: 6px; font-size: 13px; }
+.quiz-result { font-weight: bold; font-size: 16px; }
+
+/* ----- Flashcards (flip effect) ----- */
+.flashcard { max-width: 520px; margin: 8px auto; cursor: pointer; perspective: 900px; }
+.flashcard:focus-visible { outline: 2px solid var(--link); }
+.flashcard-inner {
+  display: grid;                       /* both faces share one grid cell so the card grows to fit text */
+  transform-style: preserve-3d;
+  transition: transform 0.4s;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.face {
+  grid-area: 1 / 1;
+  min-height: 180px;
+  padding: 16px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.face.back { transform: rotateY(180deg); background: var(--panel); }
+.face p { margin: 6px 0 0; font-size: 16px; }
+.face-label { font-size: 11px; text-transform: uppercase; color: var(--muted); }
+
+/* ----- History ----- */
+.history-list { list-style: none; padding: 0; margin: 0; }
+.history-item { border: 1px solid var(--border); border-radius: 3px; padding: 10px 12px; margin-bottom: 8px; }
+.history-title { font-weight: bold; word-break: break-word; }
+.history-meta { color: var(--muted); font-size: 12px; margin: 2px 0 4px; }
+
+.footer { padding-top: 16px; padding-bottom: 24px; }
+
+/* ----- Responsive ----- */
+@media (max-width: 600px) {
+  .navbar-inner { gap: 8px; }
+  .navbar nav { order: 3; flex-basis: 100%; }
+  .btn { padding: 8px 10px; }
+  .button-row .btn { flex: 1 1 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-inner { transition: none; }
 }
