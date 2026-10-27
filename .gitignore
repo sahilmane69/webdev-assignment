@@ -1,0 +1,18 @@
+# Dependencies and build output (none are used, but just in case)
+node_modules/
+dist/
+build/
+
+# Secrets - never commit API keys
+.env
+.env.*
+*.key
+config.local.js
+secrets.*
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
